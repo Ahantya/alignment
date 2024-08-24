@@ -1,0 +1,66 @@
+<script>
+    let r = [[0, 10], [10, 15], [15, 20]];
+    let h1 = [[0, 15], [15, 20]];
+
+
+    function calculateWidth(range) {
+      const totalRange = r[r.length - 1][1] - r[0][0];
+      const rangeSize = range[1] - range[0];
+      return (rangeSize / totalRange) * 100;
+    }
+
+    function calculateX(range) {
+      const totalRange = r[r.length - 1][1] - r[0][0];
+      const rangeStart = range[0] - r[0][0];
+      return (rangeStart / totalRange) * 300;
+    }
+</script>
+
+<svg viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg">
+
+  {#each r as range}
+    <g>
+      <rect
+        x="{calculateX(range) + 1}"
+        y="10"
+        width="{calculateWidth(range)}%"
+        height="30"
+        fill="lightblue"
+        stroke="black"
+        stroke-width="2"
+      />
+      <text
+        x="{calculateX(range) + 6}"
+        y="30"
+        fill="black"
+        font-size="12"
+        alignment-baseline="middle"
+      >
+        {range[0]} - {range[1]}
+      </text>
+    </g>
+  {/each}
+
+  {#each h1 as range}
+    <g>
+      <rect
+        x="{calculateX(range) + 1}"
+        y="60"
+        width="{calculateWidth(range)}%"
+        height="30"
+        fill="lightgreen"
+        stroke="black"
+        stroke-width="2"
+      />
+      <text
+        x="{calculateX(range) + 6}"
+        y="80"
+        fill="black"
+        font-size="12"
+        alignment-baseline="middle"
+      >
+        {range[0]} - {range[1]}
+      </text>
+    </g>
+  {/each}
+</svg>
