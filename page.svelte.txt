@@ -7,13 +7,16 @@
       const totalRange = r[r.length - 1][1] - r[0][0];
       const rangeSize = range[1] - range[0];
       return (rangeSize / totalRange) * 100;
-    }
+    
+
+<!-- This above function calculates the width of a rectangle relative to the total range. -->
 
     function calculateX(range) {
       const totalRange = r[r.length - 1][1] - r[0][0];
       const rangeStart = range[0] - r[0][0];
       return (rangeStart / totalRange) * 300;
     }
+<-- This function calculates the x-coordinate of a rectangle relative to the total range. -->
 </script>
 
 <svg viewBox="0 0 350 100" xmlns="http://www.w3.org/2000/svg">
@@ -64,3 +67,7 @@
     </g>
   {/each}
 </svg>
+
+
+
+<!-- this was my attempt to dynamically 
