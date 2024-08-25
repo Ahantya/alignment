@@ -70,4 +70,4 @@
 
 
 
-<!-- this was my attempt to dynamically 
+<!-- this was my attempt to dynamically two rectangles through coordinates listed, it was just a bit simple and also didn't show alignment, just had the rectangles themselves show up -->
