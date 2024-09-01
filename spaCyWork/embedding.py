@@ -18,24 +18,36 @@ nlp = spacy.load("en_core_web_md")
 
 
 def getSpanText(filename, start, stop):
-    with open(filename, "r") as f:
-        text = f.read()
+    text = loadDocBin(filename)
+    
+    for doc in text:
+        segment = doc.text.split()
+        segment = segment[start:stop]
+        segment = " ".join(segment)
 
-    words = text.split()
-    segment = words[start:stop]
-    segment = ' '.join(segment)
-    return segment
+
+        vectors = [token.vector for token in doc]
+        segmentVectors = vectors[start:stop]
+
+        print("Segment Text:", segment)
+        print("Segment Vectors:", segmentVectors)
+
+        return segment, segmentVectors
+        
+
+
+
 
 def saveDocBin(filename, filepath):
     with open(filename, "r") as f:
-        text = f.read() #redundancy remove for later 
+        text = f.read() 
 
 
     doc = nlp(text)
     doc_bin = DocBin()
     doc_bin.add(doc)
 
-    doc_bin.to_disk(filepath)
+    doc_bin.to_disk(filepath) # only needed to be used once
 
 def loadDocBin(filepath):
     doc_bin = DocBin().from_disk(filepath)
@@ -43,6 +55,8 @@ def loadDocBin(filepath):
     docs = list(doc_bin.get_docs(nlp.vocab))
 
     return docs
+
+
 
 
 
@@ -94,11 +108,10 @@ def main():
     # print(f"Cosine Average Similarity: {similarity:.4f}")
     filename = "spaCyWork/forSpacy.txt"
     docbin_filepath = "full_text.spacy"
-    saveDocBin(filename, docbin_filepath)
+    #saveDocBin(filename, docbin_filepath)
 
-    loaded_docs = loadDocBin(docbin_filepath)
-    for doc in loaded_docs:
-        print(doc.text)
+
+    getSpanText(docbin_filepath, 0, 10)
 
 
 
