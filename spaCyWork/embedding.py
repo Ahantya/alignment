@@ -21,20 +21,21 @@ def getSpanText(filename, start, stop):
     text = loadDocBin(filename)
     
     for doc in text:
+        # for sentence in doc.sentences
+            #for token in sentence
+                #get the word from its token
         segment = doc.text.split()
         segment = segment[start:stop]
         segment = " ".join(segment)
-
-
-        vectors = [token.vector for token in doc]
-        segmentVectors = vectors[start:stop]
-
         print("Segment Text:", segment)
+
+        vectors = [token.vector for token in doc] # this is not based on spaces like the text is
+        segmentVectors = vectors[start:stop]
         print("Segment Vectors:", segmentVectors)
 
         return segment, segmentVectors
         
-
+# separate them into different files
 
 
 
@@ -43,7 +44,7 @@ def saveDocBin(filename, filepath):
         text = f.read() 
 
 
-    doc = nlp(text)
+    doc = nlp(text) # use pipe() instead
     doc_bin = DocBin()
     doc_bin.add(doc)
 
