@@ -1,119 +1,122 @@
 import spacy
 import numpy as np
 from spacy.tokens import DocBin, Doc    
+import json
 
-
-# step 1: wrap some article into a file that reads this text
-# step 2: function where it gives you a start, stop(exclusive)
-# step 3: it gives/stores out embeddings thru spacy 
-# step 4: compare embeddings of each word in top segment vs bottom segment and find highest cosine similarity
-# actually average cosine similarities
+VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
+DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
+IN_FILE = 'spaCyWork/Data/allArticles.txt'
+N_THREADS = 8
+ARTICLE_LIMIT = 100
 
 
 nlp = spacy.load("en_core_web_md")
 
-            # if similarity > highestSimilarity:
-            #     highestSimilarity = similarity
-            #     mostSimilarWords = (word1, word2)
 
+def loadArticles(file=IN_FILE, maxYields=ARTICLE_LIMIT):
+    """
+    Generator that yields articles one by one from the input file.
 
-def getSpanText(filename, start, stop):
-    text = loadDocBin(filename)
+    Args:
+    - file: Path to the file containing the articles.
+    - maxYields: Maximum number of articles to yield.
+
+    Yields:
+    - article: A json file representing an article.
+    """
+    n = 0
+    with open(file, 'r') as f:
+        for line in f:
+            if n >= maxYields:
+                break
+
+            article = json.loads(line.strip())
+            yield article  # yield the article and pause
+            n += 1  
+
+def processArticle(article, nlp):
+    """
+    Process a single article with spaCy and return the Doc objects.
+
+    Args:
+    - article: Dictionary representing an article.
+    - nlp: spaCy pipeline.
+
+    Returns:
+    - docDict: Dictionary of processed Doc objects keyed by their index in the article.
+    """
+    docDict = {}
+    texts = [(par, {'url': article['url'], 'index': i}) for i, par in enumerate(article['content'])]
+
+    # Process texts with spaCy pipeline
+    docTuples = nlp.pipe(texts, n_process=N_THREADS, as_tuples=True)
     
-    for doc in text:
-        # for sentence in doc.sentences
-            #for token in sentence
-                #get the word from its token
-        segment = doc.text.split()
-        segment = segment[start:stop]
-        segment = " ".join(segment)
-        print("Segment Text:", segment)
+    for doc, context in docTuples:
+        docDict[context['index']] = doc
+        # index of paragraph, so it stores each paragraph in doc separately
 
-        vectors = [token.vector for token in doc] # this is not based on spaces like the text is
-        segmentVectors = vectors[start:stop]
-        print("Segment Vectors:", segmentVectors)
+    return docDict
 
-        return segment, segmentVectors
-        
-# separate them into different files
-
-
-
-def saveDocBin(filename, filepath):
-    with open(filename, "r") as f:
-        text = f.read() 
-
-
-    doc = nlp(text) # use pipe() instead
-    doc_bin = DocBin()
-    doc_bin.add(doc)
-
-    doc_bin.to_disk(filepath) # only needed to be used once
-
-def loadDocBin(filepath):
-    doc_bin = DocBin().from_disk(filepath)
-
-    docs = list(doc_bin.get_docs(nlp.vocab))
-
-    return docs
-
-
-
-
-
-# def embeddingStore(segment1, segment2):
-#     nlp = spacy.load('en_core_web_md')
-#     doc1 = nlp(segment1) # scale this and change this
-#     # multiple paragraphs
-#     doc2 = nlp(segment2) #nlp.pipe instead of this and then store the txt storing spacy docs to disk
+def getSpanText(docs, start, stop):
+    """
+    Extract and return text and vectors for a specific range from a list of Docs.
     
-#     embeddingsList1 = {}
-#     embeddingsList2 = {}
-
-#     for token in doc1:
-#         embeddingsList1[token.text] = token.vector
-
-#     for token in doc2:
-#         embeddingsList2[token.text] = token.vector
+    Args:
+    - docs: List of spacy.tokens.Doc objects.
+    - start: Start index (inclusive).
+    - stop: End index (exclusive).
     
-    #return embeddingsList1, embeddingsList2
+    Returns:
+    - Tuple of (segmentText, segmentVectors) where:
+        - segmentText: List of words in the specified range.
+        - segmentvectors: List of word vectors in the specified range.
+    """
+    text = []
+    vectors = []
 
-# def cosineSimilarity(embedding1, embedding2):
-#     dot_product = np.dot(embedding1, embedding2)
-#     norm_embedding1 = np.linalg.norm(embedding1)
-#     norm_embedding2 = np.linalg.norm(embedding2)
-#     return dot_product / (norm_embedding1 * norm_embedding2)
+    for doc in docs: # words in paragraphs
+        for token in doc: # tokens in word
+            if len(text) >= stop:
+                break
+            if len(text) >= start:
+                text.append(token.text)
+                vectors.append(token.vector)
 
-# use the lemma 
 
-# def compareSegments(segment1, segment2): # parameters: two ranges, process embeddings from docs and get what i need
-#     embeddingsList1, embeddingsList2 = embeddingStore(segment1, segment2)
-#     totalSimilarity = 0
-#     pairCount = 0
+    # doing both by tokens rn? 
 
-#     for embedding1 in embeddingsList1.values():
-#         for embedding2 in embeddingsList2.values():
-#             similarity = cosineSimilarity(embedding1, embedding2)
-#             totalSimilarity += similarity
-#             pairCount += 1
-#     if pairCount == 0:
-#         return 0
 
-#     averageSimilarity = totalSimilarity / pairCount 
-#     return averageSimilarity
+    segmentText = " ".join(text[start:stop])
+    #print("Segment Text:", segmentText)
+
+    segmentVectors = vectors[start:stop]
+    #print("Segment Vectors:", segmentVectors)
+
+    return segmentText, segmentVectors
+
+
+
+
+
 
 def main():
-    # segment1 = getSegment("spaCyWork/forSpacy.txt", 0, 10)
-    # segment2 = getSegment("spaCyWork/forSpacy.txt", 200, 210)
-    # similarity = compareSegments(segment1, segment2)
-    # print(f"Cosine Average Similarity: {similarity:.4f}")
-    filename = "spaCyWork/forSpacy.txt"
-    docbin_filepath = "full_text.spacy"
-    #saveDocBin(filename, docbin_filepath)
+    articles = loadArticles(IN_FILE, ARTICLE_LIMIT)
 
+    for article in articles:
+        print(f"Processing article from URL: {article['url']}")
+        processedDocs = processArticle(article, nlp)
+        
+        #combine the processed docs into a list and get their values (ie. their doc objects)
+        docs = list(processedDocs.values())
 
-    getSpanText(docbin_filepath, 0, 10)
+        #extract text and vectors from a specific span, for example from index 0 to 10
+        segmentText, segmentVectors = getSpanText(docs, 0, 10)
 
+        #output the results
+        print(f"Extracted Text: {segmentText}")
+        print(f"Vectors: {np.array(segmentVectors)}")\
+        
+        break
 
-
-main()
+if __name__ == "__main__":
+    main()

@@ -4,15 +4,44 @@ import spacy
 import json
 from datetime import timedelta
 from spacy.tokens import DocBin
+from spacy.tokens import Doc
 from os.path import isfile
 from math import inf
 from tools import urlToFilename
+import os
 
-VOCAB_FOLDER = './Data/SpacyData/Vocab' #create my own folder
-DOCBIN_FOLDER = './Data/SpacyData/DocBins'
-IN_FILE = './Data/allArticles.txt'
+VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
+DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
+IN_FILE = 'spaCyWork/Data/allArticles.txt'
 N_THREADS = 8
-ARTICLE_LIMIT = inf
+ARTICLE_LIMIT = 100
+
+
+class WhitespaceTokenizer:
+    def __init__(self, vocab):
+        self.vocab = vocab
+
+    def __call__(self, text):
+        words = text.split(" ")
+        spaces = [True] * len(words)
+        # Avoid zero-length tokens
+        for i, word in enumerate(words):
+            if word == "":
+                words[i] = " "
+                spaces[i] = False
+        # Remove the final trailing space
+        if words[-1] == " ":
+            words = words[0:-1]
+            spaces = spaces[0:-1]
+        else:
+           spaces[-1] = False
+
+        return Doc(self.vocab, words=words, spaces=spaces)
+	
+# nlp = spacy.blank("en")
+# nlp.tokenizer = WhitespaceTokenizer(nlp.vocab)
+# doc = nlp("What's happened to me? he thought. It wasn't a dream.")
+# print([token.text for token in doc])
 
 
 
@@ -40,12 +69,15 @@ def getSpacyDocs(nlp,generator):
 		for i,par in enumerate(article['content']):
 			texts.append((par,{'url': article['url'], 'index': i}))
 
-	print(f'Processing {len(docDict)} articles...')
+	#print(f'Processing {len(docDict)} articles...')
+	print("who?")
 
 	doc_tuples = nlp.pipe(texts, n_process=N_THREADS, as_tuples=True)
 
 	for doc, context in doc_tuples:
 		docDict[context['url']][context['index']] = doc
+
+	print("ok")
 
 	return docDict
 
@@ -53,15 +85,19 @@ def getSpacyDocs(nlp,generator):
 
 def run ():
 
-	nlp = spacy.load("en_core_web_lg")
+	nlp = spacy.load("en_core_web_sm")
 	nlp.disable_pipe("parser")
 	nlp.enable_pipe("senter")
 
-	logger.info("Loaded spacy...")
+	nlp.tokenizer = WhitespaceTokenizer(nlp.vocab)
+
 
 	articleGen = articleGenerator(IN_FILE)
 
 	docDict = getSpacyDocs(nlp,articleGen)
+
+	if not os.path.exists(DOCBIN_FOLDER):
+		os.makedirs(DOCBIN_FOLDER)
 
 	nlp.vocab.to_disk(VOCAB_FOLDER)
 
@@ -76,16 +112,7 @@ def run ():
 
 
 if __name__ == "__main__":
-    start = time.time()
-    logging.basicConfig(level="INFO", handlers=[
-        logging.FileHandler("spacy.log", mode='w'),
-        logging.StreamHandler()
-    ])
-    logger = logging.getLogger(__name__)
-    logger.info(f"Start:{time.strftime('%Y-%m-%d %H:%M %Z', time.localtime(start))}")
-    run()
-    end = time.time()
-    logger.info(f"Run Time: {timedelta(seconds=end-start)}")
+	run()
 
 
 # do whitespace tokenizer before article generator

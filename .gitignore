@@ -14,3 +14,4 @@ spaCyWork/Data/SpacyData/Vocab/lookups.bin
 spaCyWork/Data/SpacyData/Vocab/strings.json
 spaCyWork/Data/SpacyData/Vocab/vectors
 spaCyWork/Data/SpacyData/Vocab/vectors.cfg
+spaCyWork/Data/allArticles.txt
