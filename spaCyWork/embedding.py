@@ -47,7 +47,7 @@ def getArticles(generator):
     for article in generator:
         key = article['url']
         toFile = urlToFilename(key)
-        docList = list(getArticleDocBin(toFile).get_docs(VOCAB)) #nlp.vocab works
+        docList = list(getArticleDocBin(toFile).get_docs(nlp.vocab)) #nlp.vocab works
         
         #Combine the processed docs into a list and get their values (i.e., their doc objects)
         try:
@@ -105,6 +105,11 @@ def main():
         #output the results
         #print(f"Extracted Text: {segmentText}")
         #print(f"Vectors: {np.array(segmentVectors)}")\
+
+
+        # Assuming you already have a DocBin saved, load it and inspect
+
+        
         
 
 if __name__ == "__main__":
