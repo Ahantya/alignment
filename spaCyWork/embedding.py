@@ -12,8 +12,8 @@ IN_FILE = 'spaCyWork/Data/allArticles.txt'
 N_THREADS = 8
 ARTICLE_LIMIT = 10
 VOCAB = Vocab().from_disk("spaCyWork/Data/SpacyData/Vocab")
-start = 0
-stop = 10
+start = 2
+stop = 4
 
 
 
@@ -59,39 +59,24 @@ def getArticles(generator):
             print(f'Docbin error: {key}')
             continue
 
-        
+        segmentTest = getSpanText(docList, start, stop)
+
+
 
     
         
 
 def getSpanText(docs, start, stop):
-    text = []
-    vectors = []
 
-    for doc in docs: # words in paragraphs
-        for token in doc: # tokens in word
-            if len(text) >= stop:
-                break
-            if len(text) >= start:
-                text.append(token.text)
-                vectors.append(token.vector)
+    doc = Doc.from_docs(docs[start:stop])
+    segmentText = doc
+    print(segmentText)
 
-
-    # doing both by tokens rn? 
-
-
-    segmentText = " ".join(text[start:stop])
-    #print("Segment Text:", segmentText)
-
-    segmentVectors = vectors[start:stop]
-    #print("Segment Vectors:", segmentVectors)
-
-    return segmentText, segmentVectors
 
 # split one method for text and then one for vectors
 # fix nlp.pipe
 # doc = Doc.from_docs(docList[start:stop]) # check the method's documentation
-# # 
+# fix whitespace to be natural tokenization or something 
 
 
 def main():
