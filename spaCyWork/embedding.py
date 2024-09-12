@@ -11,9 +11,9 @@ DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
 IN_FILE = 'spaCyWork/Data/allArticles.txt'
 N_THREADS = 8
 ARTICLE_LIMIT = 10
-VOCAB = Vocab().from_disk("spaCyWork/Data/SpacyData/Vocab")
-start = 2
-stop = 4
+VOCAB = Vocab().from_disk(VOCAB_FOLDER)
+start = 0
+stop = 2
 
 
 
@@ -28,8 +28,6 @@ def getArticleDocBin(articleKey):
     dbin = DocBin().from_disk(DOCBIN_FOLDER + "/"  + fpath)
 
     return dbin
-
-
 
 
 
@@ -49,7 +47,7 @@ def getArticles(generator):
     for article in generator:
         key = article['url']
         toFile = urlToFilename(key)
-        docList = list(getArticleDocBin(toFile).get_docs(VOCAB))
+        docList = list(getArticleDocBin(toFile).get_docs(VOCAB)) #nlp.vocab works
         
         #Combine the processed docs into a list and get their values (i.e., their doc objects)
         try:
@@ -59,18 +57,36 @@ def getArticles(generator):
             print(f'Docbin error: {key}')
             continue
 
-        segmentTest = getSpanText(docList, start, stop)
+        segmentTest = getSpanText(docList)
+        vectorTest = getVectors(docList)
+        
+        
 
+
+
+def getVectors(docs):
+    paragraphRange = docs[start:stop]
+    vectors = []
+    for doc in paragraphRange:
+        if not doc.has_vector:
+            print(f"Doc '{doc}' does not have vectors.")
+        for token in doc:
+            if token.has_vector:
+                vectors.append(token.vector)
+            else:
+                print(f"Token '{token.text}' does not have a vector.")
+    return np.array(vectors)
 
 
     
         
 
-def getSpanText(docs, start, stop):
+def getSpanText(docs):
 
-    doc = Doc.from_docs(docs[start:stop])
-    segmentText = doc
-    print(segmentText)
+
+    paragraphRange = docs[start:stop]
+    texts = [token.text for doc in paragraphRange for token in doc]
+    return " ".join(texts)
 
 
 # split one method for text and then one for vectors
@@ -81,7 +97,8 @@ def getSpanText(docs, start, stop):
 
 def main():
         articles = loadArticles(IN_FILE, ARTICLE_LIMIT)
-        docs = getArticles(articles)
+        getArticles(articles)
+
 
         #extract text and vectors from a specific span, for example from index 0 to 10
 
