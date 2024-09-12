@@ -14,7 +14,7 @@ VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
 DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
 IN_FILE = 'spaCyWork/Data/allArticles.txt'
 N_THREADS = 8
-ARTICLE_LIMIT = 100
+ARTICLE_LIMIT = 10
 
 
 class WhitespaceTokenizer:
