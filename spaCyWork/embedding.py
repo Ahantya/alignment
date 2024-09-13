@@ -59,20 +59,15 @@ def getArticles(generator):
 
         segmentTest = getSpanText(docList)
         vectorTest = getVectors(docList)
-        print(segmentTest)
-        
         
 
 
 
 def getVectors(docs):
-    paragraphRange = docs[start:stop]
+    combined = Doc.from_docs(docs)
+    wordRange = combined[start:stop]
     vectors = []
-    for doc in paragraphRange:
-        if not doc.has_vector:
-            #print(f"Doc '{doc}' does not have vectors.")
-            continue
-        for token in doc:
+    for token in wordRange:
             if token.has_vector:
                 vectors.append(token.vector)
             else:
@@ -95,11 +90,11 @@ def getSpanText(docs):
     
 
 
-# split one method for text and then one for vectors
-# fix nlp.pipe
-# doc = Doc.from_docs(docList[start:stop]) # check the method's documentation
+# split one method for text and then one for vectors DONE
+# fix nlp.pipe DONE
+# doc = Doc.from_docs(docList[start:stop]) # check the method's documentation DONE
 # fix whitespace to be natural tokenization or something 
-# token 2 and 3 are like the 2nd and 3rd word of the combined paragraphs
+# token 2 and 3 are like the 2nd and 3rd word of the combined paragraphs DONE
 
 
 def main():
