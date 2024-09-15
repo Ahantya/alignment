@@ -4,6 +4,7 @@ from spacy.tokens import DocBin, Doc
 from os.path import isfile
 from spacy.vocab import Vocab
 import json
+from spacy.training import Alignment
 from tools import urlToFilename
 
 VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
@@ -18,6 +19,26 @@ stop = 2
 
 
 nlp = spacy.load("en_core_web_md")
+
+
+def alignTokens(docs, other_tokens):
+    combined = Doc.from_docs(docs)
+    
+    #get spaCy tokens from the doc
+    spacy_tokens = [token.text for token in combined]
+
+    #create an alignment from spaCy tokens to other tokens
+    align = Alignment.from_strings(other_tokens, spacy_tokens)
+
+    #get b -> a lengths and mappings
+    b_to_a_lengths = align.y2x.lengths  #lengths of tokens mapped from b (spacy) to a (other)
+    b_to_a_mapping = align.y2x.data  # mappings from b (spacy) to a (other)
+
+    # Output alignment information
+    print(f"b -> a, lengths: {b_to_a_lengths}")   
+    print(f"b -> a, mappings: {b_to_a_mapping}")  
+
+    return align
 
 
 def getArticleDocBin(articleKey):
