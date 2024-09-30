@@ -13,31 +13,11 @@ IN_FILE = 'spaCyWork/Data/allArticles.txt'
 N_THREADS = 8
 ARTICLE_LIMIT = 10
 VOCAB = Vocab().from_disk(VOCAB_FOLDER)
-start = 0
-stop = 2
 
 
 
 nlp = spacy.load("en_core_web_md")
 
-
-def alignTokens(docs, otherTokens):
-    combined = Doc.from_docs(docs)
-    
-    #get spaCy tokens from the doc
-    spacyTokens = [token.text for token in combined]
-
-    #create an alignment from spaCy tokens to other tokens
-    align = Alignment.from_strings(otherTokens, spacyTokens)
-
-    #get b -> a lengths and mappings
-    bToALengths = align.y2x.lengths  #lengths of tokens mapped from b (spacy) to a (other)
-    bToAMapping = align.y2x.data  # mappings from b (spacy) to a (other) 
-
-    print(f"b -> a, lengths: {bToALengths}")   
-    print(f"b -> a, mappings: {bToAMapping}")  
-
-    return align
 
 
 def getArticleDocBin(articleKey):
@@ -78,10 +58,12 @@ def getDocList(article):
             return
         
 
+        # I like driving Joe's car, especially at night. 
+        
 
-def getVectors(docs):
-    combined = Doc.from_docs(docs)
-    wordRange = combined[start:stop]
+
+def getSpanVectors(articleDoc, start, stop):
+    wordRange = articleDoc[start:stop]
     vectors = []
     for token in wordRange:
             if token.has_vector:
@@ -95,10 +77,8 @@ def getVectors(docs):
     
         
 
-def getSpanText(docs):
-
-    combined = Doc.from_docs(docs)
-    wordRange = combined[start:stop]
+def getSpanText(articleDoc, start, stop):
+    wordRange = articleDoc[start:stop]
 
     spanText = " ".join([token.text for token in wordRange])
 
@@ -117,9 +97,13 @@ def getSpanText(docs):
 
 def main():
         articleGenerator = loadArticles(IN_FILE, ARTICLE_LIMIT)
+        start = 0
+        stop = 2
         for article in articleGenerator:
              # given an article, get the doclist
              docList = getDocList(article)
+             combinedDoc = Doc.from_docs(docList)
+             segmentText = getSpanText(combinedDoc, start, stop)
 
 
              
