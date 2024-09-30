@@ -63,8 +63,7 @@ def loadArticles(file=IN_FILE, maxYields=ARTICLE_LIMIT):
             n += 1  
 
 
-def getArticles(generator):
-    for article in generator:
+def getDocList(article):
         key = article['url']
         toFile = urlToFilename(key)
         docList = list(getArticleDocBin(toFile).get_docs(nlp.vocab)) #nlp.vocab works
@@ -73,14 +72,11 @@ def getArticles(generator):
         try:
             assert docList is not None
             assert len(docList) == len(article['content'])
+            return docList
         except AssertionError as e:
             print(f'Docbin error: {key}')
-            continue
-
-        segmentTest = getSpanText(docList)
-        vectorTest = getVectors(docList)
+            return
         
-
 
 
 def getVectors(docs):
@@ -107,6 +103,8 @@ def getSpanText(docs):
     spanText = " ".join([token.text for token in wordRange])
 
     return spanText
+
+# should we be getting a list of docs or a single doc? 
     
 
 
@@ -118,8 +116,15 @@ def getSpanText(docs):
 
 
 def main():
-        articles = loadArticles(IN_FILE, ARTICLE_LIMIT)
-        getArticles(articles)
+        articleGenerator = loadArticles(IN_FILE, ARTICLE_LIMIT)
+        for article in articleGenerator:
+             # given an article, get the doclist
+             docList = getDocList(article)
+
+
+             
+             
+        
 
 
         #extract text and vectors from a specific span, for example from index 0 to 10
