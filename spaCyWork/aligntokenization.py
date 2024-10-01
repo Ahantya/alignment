@@ -17,17 +17,12 @@ other_tokens = text.split(" ")
 
 otherWord = other_tokens[iStart:iStop] #this gets the word from the index istart to iStop
 
-spacyWord = ""
-
 
 spacy_tokens = [token.text for token in doc]
 align = Alignment.from_strings(other_tokens, spacy_tokens)
 
 # print(other_tokens)
 # print(spacy_tokens)
-
-
-index = 0
 
 
 mappedSpacyIndices = []
