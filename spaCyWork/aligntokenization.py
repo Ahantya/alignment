@@ -33,8 +33,8 @@ index = 0
 mappedSpacyIndices = []
 
 for i in range(iStart, iStop + 1):
-    spacy_indices = align.x2y[i]
-    mappedSpacyIndices.extend(spacy_indices)
+    spacyIndices = align.x2y[i]
+    mappedSpacyIndices.extend(spacyIndices)
 
 print(mappedSpacyIndices)
 
