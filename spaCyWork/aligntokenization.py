@@ -31,7 +31,7 @@ for i in range(iStart, iStop + 1):
     spacyIndices = align.x2y[i]
     mappedSpacyIndices.extend(spacyIndices)
 
-print(mappedSpacyIndices)
+print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + ")"))
 
 # print(f"a -> b, lengths: {align.x2y.lengths}")  
 # print(f"a -> b, mapping: {align.x2y.data}")   #***
