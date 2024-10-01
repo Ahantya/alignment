@@ -8,25 +8,47 @@ text = "I like driving Joe's car, especially at night."
 
 doc = nlp(text)
 
-other_tokens = text.split(" ")
-spacy_tokens = [token.text for token in doc]
-align = Alignment.from_strings(other_tokens, spacy_tokens)
-
-print(other_tokens)
-print(spacy_tokens)
-
-print(f"a -> b, lengths: {align.x2y.lengths}")  
-print(f"a -> b, mapping: {align.x2y.data}")   #***
-print(f"b -> a, lengths: {align.y2x.lengths}")  
-print(f"b -> a, mappings: {align.y2x.data}")   #***
-
 # given this from spacing
 iStart = 0
 iStop = 5  
 
+
+other_tokens = text.split(" ")
+
+otherWord = other_tokens[iStart:iStop] #this gets the word from the index istart to iStop
+
+spacyWord = ""
+
+
+spacy_tokens = [token.text for token in doc]
+align = Alignment.from_strings(other_tokens, spacy_tokens)
+
+# print(other_tokens)
+# print(spacy_tokens)
+
+
+index = 0
+
+
+mappedSpacyIndices = []
+
+for i in range(iStart, iStop + 1):
+    spacy_indices = align.x2y[i]
+    mappedSpacyIndices.extend(spacy_indices)
+
+print(mappedSpacyIndices)
+
+# print(f"a -> b, lengths: {align.x2y.lengths}")  
+# print(f"a -> b, mapping: {align.x2y.data}")   #***
+# print(f"b -> a, lengths: {align.y2x.lengths}")  
+
+
+print(f"b -> a, mappings: {align.y2x.data}")   #***
+
+
 # i need this once i get spacy's based
-oStart = 0
-oStop = 7
+# oStart = 0
+# oStop = 7
 
 # some type of loop around the mapping array?
 
@@ -36,7 +58,6 @@ oStop = 7
 #other ['I', 'like', 'driving', "Joe's", 'car,', 'especially', 'at', 'night.']
 #spacy ['I', 'like', 'driving', 'Joe', "'s ", 'car', ',', 'especially', 'at', 'night', '.']
 
-# if spacy is more than other in length, b -> a WORKS, otherwise a -> b like in obama example bc they aren't using spacing like we are here
 
 # a -> b, lengths: [1 1 1 2 2 1 1 2]
 # a -> b, mapping: [ 0  1  2  3  4  5  6  7  8  9 10]
