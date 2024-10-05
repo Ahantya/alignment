@@ -38,7 +38,7 @@ print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + "
 # print(f"b -> a, lengths: {align.y2x.lengths}")  
 
 
-print(f"b -> a, mappings: {align.y2x.data}")   #***
+#print(f"b -> a, mappings: {align.y2x.data}")   #***
 
 
 # i need this once i get spacy's based
@@ -59,3 +59,11 @@ print(f"b -> a, mappings: {align.y2x.data}")   #***
 # b -> a, lengths: [1 1 1 1 1 1 1 1 1 1 1]
 # b -> a, mappings: [0 1 2 3 3 4 4 5 6 7 7] # try this
 
+
+# other_tokens = ["i", "sent", "tom's",   "girlfiend", "sally", "'s", "clothes"]
+# spacy_tokens = ["i", "sent", "tom","'s","girlfiend", "sally's",     "clothes"]
+# align = Alignment.from_strings(other_tokens, spacy_tokens)
+# print(f"a -> b, lengths: {align.x2y.lengths}")  # array([1, 1, 1, 1, 1, 1, 1, 1])
+# print(f"a -> b, mapping: {align.x2y.data}")  # array([0, 1, 2, 3, 4, 4, 5, 6]) : two tokens both refer to "'s"
+# print(f"b -> a, lengths: {align.y2x.lengths}")  # array([1, 1, 1, 1, 2, 1, 1])   : the token "'s" refers to two tokens
+# print(f"b -> a, mappings: {align.y2x.data}")  # array([0, 1, 2, 3, 4, 5, 6, 7])
