@@ -4,7 +4,7 @@ from spacy.training import Alignment
 
 nlp = spacy.load("en_core_web_md")
 
-text = "I like driving Joe's car, especially at night."
+text = "I sent tom's girlfriend sally's clothes"
 
 doc = nlp(text)
 
@@ -21,17 +21,14 @@ otherWord = other_tokens[iStart:iStop] #this gets the word from the index istart
 spacy_tokens = [token.text for token in doc]
 align = Alignment.from_strings(other_tokens, spacy_tokens)
 
-# print(other_tokens)
-# print(spacy_tokens)
-
-
 mappedSpacyIndices = []
 
 for i in range(iStart, iStop + 1):
     spacyIndices = align.x2y[i]
-    mappedSpacyIndices.extend(spacyIndices)
+    print(spacyIndices)
+    mappedSpacyIndices.extend(spacyIndices) # so we dont have lists within lists
 
-print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + ")"))
+#print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + ")"))
 
 # print(f"a -> b, lengths: {align.x2y.lengths}")  
 # print(f"a -> b, mapping: {align.x2y.data}")   #***
@@ -67,3 +64,7 @@ print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + "
 # print(f"a -> b, mapping: {align.x2y.data}")  # array([0, 1, 2, 3, 4, 4, 5, 6]) : two tokens both refer to "'s"
 # print(f"b -> a, lengths: {align.y2x.lengths}")  # array([1, 1, 1, 1, 2, 1, 1])   : the token "'s" refers to two tokens
 # print(f"b -> a, mappings: {align.y2x.data}")  # array([0, 1, 2, 3, 4, 5, 6, 7])
+
+
+# #print(align.x2y[2])
+
