@@ -58,8 +58,6 @@ def getDocList(article):
             return
         
 
-        # I like driving Joe's car, especially at night. 
-        
 
 
 def getSpanVectors(articleDoc, start, stop):

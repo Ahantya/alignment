@@ -9,26 +9,45 @@ text = "I sent tom's girlfriend sally's clothes"
 doc = nlp(text)
 
 # given this from spacing
-iStart = 0
-iStop = 5  
+iStart = 2
+iStop = 5  # excludes this last index
 
 
-other_tokens = text.split(" ")
+space_tokens = text.split(" ")
+#doc.text.split(" ")
 
-otherWord = other_tokens[iStart:iStop] #this gets the word from the index istart to iStop
+#otherWord = other_tokens[iStart:iStop] #this gets the word from the index istart to iStop
 
 
 spacy_tokens = [token.text for token in doc]
-align = Alignment.from_strings(other_tokens, spacy_tokens)
+print(space_tokens)
+print(spacy_tokens)
+align = Alignment.from_strings(space_tokens, spacy_tokens)
 
-mappedSpacyIndices = []
+spacyStart = align.x2y[iStart][0]
+spacyEnd = align.x2y[iStop][-1]
 
-for i in range(iStart, iStop + 1):
-    spacyIndices = align.x2y[i]
-    print(spacyIndices)
-    mappedSpacyIndices.extend(spacyIndices) # so we dont have lists within lists
+# function spaceRangeToSpacyRange(start, stop, currentDoc (represents text))
+    #doc.text.split(" ") for space tokens
+    #spacy tokens as it is
+    # align = Alignment.from_strings(space_tokens, spacy_tokens)
+    #spacyStart = align.x2y[iStart][0]
+    #spacyEnd = align.x2y[iStop][-1] 
+    #return (spacyStart, spacyEnd) tuple 
+
+spacyRange = (spacyStart, spacyEnd)
+print(spacy_tokens[spacyStart:spacyEnd])
+
+#mappedSpacyIndices = []
+
+# for i in range(iStart, iStop + 1):
+#     spacyIndices = align.x2y[i]
+#     print(spacyIndices, i)
+#     mappedSpacyIndices.extend(spacyIndices) # so we dont have lists within lists
 
 #print("(" + (str(mappedSpacyIndices[0]) + ", " + str(mappedSpacyIndices[-1]) + ")"))
+
+# range for OUTPUT
 
 # print(f"a -> b, lengths: {align.x2y.lengths}")  
 # print(f"a -> b, mapping: {align.x2y.data}")   #***
