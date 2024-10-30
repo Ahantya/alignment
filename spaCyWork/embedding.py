@@ -18,6 +18,13 @@ VOCAB = Vocab().from_disk(VOCAB_FOLDER)
 
 nlp = spacy.load("en_core_web_md")
 
+def spaceRangeToSpacyRange(start, stop, articleDoc):
+    spaceTokens = articleDoc.text.split(" ") 
+    spacyTokens = [token.text for token in articleDoc]
+    align = Alignment.from_strings(spaceTokens, spacyTokens)
+    spacyStart = align.x2y[start][0]
+    spacyEnd = align.x2y[stop][-1] 
+    return (spacyStart, spacyEnd)
 
 
 def getArticleDocBin(articleKey):
@@ -72,7 +79,6 @@ def getSpanVectors(articleDoc, start, stop):
     return np.array(vectors)
 
 
-    
         
 
 def getSpanText(articleDoc, start, stop):
@@ -98,10 +104,11 @@ def main():
         start = 0
         stop = 2
         for article in articleGenerator:
-             # given an article, get the doclist
              docList = getDocList(article)
              combinedDoc = Doc.from_docs(docList)
              segmentText = getSpanText(combinedDoc, start, stop)
+             spacyRange = spaceRangeToSpacyRange(start, stop, combinedDoc)
+             print(spacyRange)
 
 
              
