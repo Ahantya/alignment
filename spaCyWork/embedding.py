@@ -15,6 +15,10 @@ ARTICLE_LIMIT = 10
 VOCAB = Vocab().from_disk(VOCAB_FOLDER)
 
 
+# use sublime to open allArticles.txt
+# manually look at space range (stop is exclusive)
+
+
 
 nlp = spacy.load("en_core_web_md")
 
@@ -26,6 +30,8 @@ def spaceRangeToSpacyRange(start, stop, articleDoc):
     spacyEnd = align.x2y[stop][-1] 
     return (spacyStart, spacyEnd)
 
+
+# TEST THIS
 
 def getArticleDocBin(articleKey):
     fpath = articleKey
@@ -101,19 +107,25 @@ def getSpanText(articleDoc, start, stop):
 
 def main():
         articleGenerator = loadArticles(IN_FILE, ARTICLE_LIMIT)
-        start = 0
-        stop = 2
+        start = 6 #sends
+        stop = 15 #before driving
+
+        start = 15 #driving 
+        stop = 20 #before and 
+
+        # this is working 
         for article in articleGenerator:
              docList = getDocList(article)
              combinedDoc = Doc.from_docs(docList)
-             segmentText = getSpanText(combinedDoc, start, stop)
-             spacyRange = spaceRangeToSpacyRange(start, stop, combinedDoc)
-             print(spacyRange)
-
-
-             
-             
-        
+             # one Doc per article
+             (spacyStart, spacyStop) = spaceRangeToSpacyRange(start, stop, combinedDoc)
+             segmentText = getSpanText(combinedDoc, spacyStart, spacyStop)
+             print(segmentText) # manually verify that this is the same as the spaces we looked at the article (check above comments)
+             exit() #stops after first article
+             spaceText = " ".join(combinedDoc.text.split(" ")[start:stop])
+             (spacyStart, spacyStop) = spaceRangeToSpacyRange(start, stop, combinedDoc)
+             spacyText = getSpanText(combinedDoc, spacyStart, spacyStop)
+             assert spaceText == spacyText
 
 
         #extract text and vectors from a specific span, for example from index 0 to 10
