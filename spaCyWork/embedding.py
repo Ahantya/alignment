@@ -113,6 +113,10 @@ def main():
         start = 15 #driving 
         stop = 20 #before and 
 
+        start = 350 
+        stop = 354 # last index
+
+
         # this is working 
         for article in articleGenerator:
              docList = getDocList(article)
@@ -142,3 +146,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    # on articles.txt, article content should be one string (manually do first one)
+    # use newline characters (enter)
+    # modify the runSpacy # look at comments on file
+    # test 3 cases (1. all contained in first paragraph, 2. all in another paragraph, 3. text is across both paragraphs) 
+    # make a new article so i can test
+
+
+    

@@ -66,8 +66,12 @@ def getSpacyDocs(nlp,generator):
 	for article in generator:
 		docDict[article['url']] = [None]*len(article['content'])
 
-		for i,par in enumerate(article['content']):
+		# split article content -> new variable
+
+		for i,par in enumerate(article['content']): # over new variable
 			texts.append((par,{'url': article['url'], 'index': i}))
+
+
 
 	#print(f'Processing {len(docDict)} articles...')
 	print("who?")
