@@ -17,3 +17,4 @@ spaCyWork/Data/SpacyData/Vocab/vectors.cfg
 spaCyWork/Data/allArticles.txt
 .DS_Store
 spaCyWork/.DS_Store
+spaCyWork/Data/newArticle.txt

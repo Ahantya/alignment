@@ -10,6 +10,7 @@ from tools import urlToFilename
 VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
 DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
 IN_FILE = 'spaCyWork/Data/allArticles.txt'
+IN_FILE = 'spaCyWork/Data/newArticle.txt'
 N_THREADS = 8
 ARTICLE_LIMIT = 10
 VOCAB = Vocab().from_disk(VOCAB_FOLDER)
@@ -43,6 +44,22 @@ def getArticleDocBin(articleKey):
     return dbin
 
 
+def createDocsFromArticle(article):
+    #get content and split into paragraphs
+    content = article['content'] 
+    paragraphs = content.split('\n') 
+
+    docList = []
+    for para in paragraphs:
+        # Tokenize the paragraph into a list of words (or you can use sentence segmentation)
+        tokens = para.split()
+
+        doc = spacy.tokens.Doc(nlp.vocab, words=tokens)
+
+        docList.append(doc)
+
+    return docList
+
 
 def loadArticles(file=IN_FILE, maxYields=ARTICLE_LIMIT):
     n = 0
@@ -52,6 +69,7 @@ def loadArticles(file=IN_FILE, maxYields=ARTICLE_LIMIT):
                 break
 
             article = json.loads(line.strip())
+            
             yield article  # yield the article and pause
             n += 1  
 
@@ -104,24 +122,30 @@ def getSpanText(articleDoc, start, stop):
 # fix whitespace to be natural tokenization or something 
 # token 2 and 3 are like the 2nd and 3rd word of the combined paragraphs DONE
 
-
+# 
 def main():
         articleGenerator = loadArticles(IN_FILE, ARTICLE_LIMIT)
-        start = 6 #sends
-        stop = 15 #before driving
+        #print(list(articleGenerator))
+        # count = 0
+        # for article in articleGenerator:
+        #     count+= 1
+        # print(count)
+        start = 0 #sends
+        stop = 2 #before driving
 
-        start = 15 #driving 
-        stop = 20 #before and 
+        #start = 15 #driving 
+        #stop = 20 #before and 
 
-        start = 350 
-        stop = 354 # last index
+        #start = 350 
+        #stop = 354 # last index
 
 
         # this is working 
         for article in articleGenerator:
-             docList = getDocList(article)
+             docList = createDocsFromArticle(article)
+             #docList = getDocList(article)
              combinedDoc = Doc.from_docs(docList)
-             # one Doc per article
+            #  # one Doc per article
              (spacyStart, spacyStop) = spaceRangeToSpacyRange(start, stop, combinedDoc)
              segmentText = getSpanText(combinedDoc, spacyStart, spacyStop)
              print(segmentText) # manually verify that this is the same as the spaces we looked at the article (check above comments)
@@ -154,4 +178,4 @@ if __name__ == "__main__":
     # make a new article so i can test
 
 
-    
+

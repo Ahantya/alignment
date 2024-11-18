@@ -13,6 +13,7 @@ import os
 VOCAB_FOLDER = 'spaCyWork/Data/SpacyData/Vocab' #create my own folder
 DOCBIN_FOLDER = 'spaCyWork/Data/SpacyData/DocBins'
 IN_FILE = 'spaCyWork/Data/allArticles.txt'
+IN_FILE = 'spaCyWork/Data/newArticle.txt'
 N_THREADS = 8
 ARTICLE_LIMIT = 10
 
@@ -64,24 +65,29 @@ def getSpacyDocs(nlp,generator):
 	texts = []
 	docDict = {}
 	for article in generator:
-		docDict[article['url']] = [None]*len(article['content'])
 
-		# split article content -> new variable
+		
+		building = article['content'].split()
+		print(building)
 
-		for i,par in enumerate(article['content']): # over new variable
+		docDict[article['url']] = [None]*len(building)
+
+
+		for i,par in enumerate(building):
 			texts.append((par,{'url': article['url'], 'index': i}))
-
-
 
 	#print(f'Processing {len(docDict)} articles...')
 	print("who?")
 
 	doc_tuples = nlp.pipe(texts, n_process=N_THREADS, as_tuples=True)
 
+	o = 0
 	for doc, context in doc_tuples:
 		docDict[context['url']][context['index']] = doc
+		o += 1
+		print(o)
 
-	print("ok")
+	print(docDict)
 
 	return docDict
 
