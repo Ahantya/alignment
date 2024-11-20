@@ -1,1 +1,1 @@
-{"category": "tv", "url": "https://www.cnn.com/2011/01/31/tv/be-in-the-know-todays-political-bullet-points-163/index.html", "title": "Be in the know: Today\u2019s political bullet points", "headings": ["Intro"], "segmentation": [[0, 11, 0]], "content": "Everyday we ask."}
+{"category": "tv", "url": "https://www.cnn.com/2011/01/31/tv/be-in-the-know-todays-political-bullet-points-163/index.html", "title": "Be in the know: Today\u2019s political bullet points", "headings": ["Intro"], "segmentation": [[0, 11, 0]], "content": "I like Fortnite\nCates hate me\nJoe is him"}

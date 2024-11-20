@@ -78,11 +78,10 @@ def getDocList(article):
         key = article['url']
         toFile = urlToFilename(key)
         docList = list(getArticleDocBin(toFile).get_docs(nlp.vocab)) #nlp.vocab works
-        
         #Combine the processed docs into a list and get their values (i.e., their doc objects)
         try:
             assert docList is not None
-            assert len(docList) == len(article['content'])
+            assert len(docList) == len(article['content'].split())
             return docList
         except AssertionError as e:
             print(f'Docbin error: {key}')
@@ -130,8 +129,8 @@ def main():
         # for article in articleGenerator:
         #     count+= 1
         # print(count)
-        start = 0 #sends
-        stop = 2 #before driving
+        start = 2 #sends
+        stop = 4     #before driving
 
         #start = 15 #driving 
         #stop = 20 #before and 
@@ -140,7 +139,7 @@ def main():
         #stop = 354 # last index
 
 
-        # this is working 
+        #this is working 
         for article in articleGenerator:
              docList = createDocsFromArticle(article)
              #docList = getDocList(article)
